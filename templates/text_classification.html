@@ -1,0 +1,600 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CatelogIQ - Text Classification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    <style>
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #ecfeff 0%, #f0f9ff 100%);
+            color: #1e3a8a;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem 0;
+            background: linear-gradient(90deg, #a5b4fc 0%, #c4b5fd 100%);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            margin: 0;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 50%;
+            right: 1.5rem;
+            transform: translateY(-50%);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background-color: #4f46e5;
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .back-button:hover {
+            background-color: #4338ca;
+            transform: translateY(-52%);
+        }
+
+        .back-button:active {
+            transform: translateY(-50%);
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            flex-wrap: wrap;
+        }
+
+        .input-card, .output-card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            flex: 1;
+            min-width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .input-card:hover, .output-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .input-card h2, .output-card h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #4f46e5;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        textarea, input[type="text"], select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: #1f2937;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        textarea:focus, input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+        }
+
+        .message-type-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .message-type-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            background-color: #e0e7ff;
+            color: #4338ca;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border: 1px solid #c7d2fe;
+        }
+
+        .message-type-button.active {
+            background-color: #4338ca;
+            color: #ffffff;
+            border-color: #4338ca;
+        }
+
+        .message-type-button:hover:not(.active) {
+            background-color: #c7d2fe;
+        }
+
+        .submit-button, .action-button {
+            width: 100%;
+            padding: 0.85rem;
+            border-radius: 0.6rem;
+            background-color: #4f46e5;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .submit-button:hover:not(:disabled), .action-button:hover {
+            background-color: #4338ca;
+            transform: translateY(-2px);
+        }
+
+        .submit-button:active:not(:disabled), .action-button:active {
+            transform: translateY(0);
+        }
+
+        .submit-button:disabled {
+            background-color: #d1d5db;
+            color: #6b7280;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .output-card {
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .response-box {
+            background-color: #f8fafc;
+            border: 1px dashed #d1d5db;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            min-height: 120px;
+            color: #1f2937;
+            font-family: 'monospace';
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .message-content {
+            display: none;
+        }
+
+        .message-content.active {
+            display: block;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 480px) {
+            .back-button {
+                right: 0.8rem;
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
+            }
+            }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+        .back-button {
+            right: 1rem;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+        .back-button {
+            right: 1.25rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        }
+
+        @media (min-width: 1025px) {
+        .back-button {
+            right: 1.5rem;
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+        }
+        }
+
+            
+        @media (max-width: 480px) {
+        .container {
+            flex-direction: column;
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        .input-card,
+        .output-card {
+            padding: 1rem;
+            width: 100%;
+        }
+
+        .input-card h2,
+        .output-card h2 {
+            font-size: 1.5rem;
+        }
+
+        .submit-button,
+        .action-button {
+            font-size: 1rem;
+            padding: 0.75rem;
+        }
+
+        .response-box {
+            font-size: 0.9rem;
+            padding: 0.75rem;
+        }
+
+        .message-type-selector {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .back-button {
+            right: 1rem;
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+        }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            padding: 1.5rem;
+            gap: 1.5rem;
+        }
+
+        .input-card,
+        .output-card {
+            width: 100%;
+        }
+
+        .input-card h2,
+        .output-card h2 {
+            font-size: 1.8rem;
+        }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+        .container {
+            flex-wrap: wrap;
+            flex-direction: row;
+            justify-content: center;
+            padding: 2rem;
+            gap: 2rem;
+        }
+
+        .input-card,
+        .output-card {
+            width: 48%;
+        }
+        }
+
+        @media (min-width: 1025px) {
+        .container {
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .input-card,
+        .output-card {
+            width: 45%;
+        }
+        }
+
+</style>
+</head>
+<body>
+    <header class="header">
+        <h1>CatelogIQ - Text Classification</h1>
+        <button class="back-button" onclick="window.location.href = '/'">Back</button>
+    </header>
+
+    <div class="container">
+        <div class="input-card">
+            <h2>Enter your message</h2>
+            <div class="message-type-selector">
+                <button class="message-type-button active" data-type="email">Mail Message</button>
+                <button class="message-type-button" data-type="sms">Text Message</button>
+                <button class="message-type-button" data-type="whatsapp">WhatsApp Message</button>
+            </div>
+
+            <form id="classification-form">
+                {% csrf_token %}
+                <div id="email-inputs" class="message-content active">
+                    <div class="form-group">
+                        <label for="subject">Subject:</label>
+                        <input type="text" id="subject" name="subject" placeholder="Enter email subject">
+                    </div>
+                    <div class="form-group">
+                        <label for="email-message">Message:</label>
+                        <textarea id="email-message" name="text" rows="6" placeholder="Enter your email message"></textarea>
+                    </div>
+                </div>
+
+                <div id="sms-inputs" class="message-content">
+                    <div class="form-group">
+                        <label for="sms-message">Message:</label>
+                        <textarea id="sms-message" name="text" rows="6" placeholder="Enter your SMS message"></textarea>
+                    </div>
+                </div>
+
+                <div id="whatsapp-inputs" class="message-content">
+                    <div class="form-group">
+                        <label for="whatsapp-message">Message:</label>
+                        <textarea id="whatsapp-message" name="text" rows="6" placeholder="Enter your WhatsApp message"></textarea>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="process-btn" class="submit-button">Process It</button>
+                    <select id="sample-questions" onchange="populateSampleQuestion()">
+                        <option value="">Sample Questions</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="output-card">
+            <h2>Classification Result</h2>
+            <div id="result" class="response-box">
+                Classification result will appear here...
+            </div>
+            <button type="button" class="action-button take-action-btn">Take Action</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample questions data
+        const sampleQuestions = {
+            email: [
+                {
+                    subject: "Invoice Inquiry",
+                    body: "Dear Customer Support Team, I hope this message reaches you well. I am reaching out to request detailed clarification regarding my recent invoice. I observed some inconsistencies in the charges applied to my account and would appreciate your help in explaining these items. Specifically, I would like a detailed breakdown of the charges from the last billing period, including any fees or adjustments that may have been made. Additionally, could you please share information about the payment options available for settling my account? I want to ensure everything is in order for upcoming payments."
+                },
+                {
+                    subject: "Discrepancy in Recent Invoice Charges",
+                    body: "Dear Customer Support, I am reaching out to highlight an issue with my latest bill. Upon inspection, I observed an overcharge, which I suspect may be due to a billing system glitch. I have previously contacted support regarding this matter, but it remains unresolved. I would greatly appreciate it if you could investigate and correct this error at your earliest convenience. Please let me know if you require any additional information to assist with resolving this issue. I look forward to your prompt response."
+                },
+                {
+                    subject: "SSD Malfunction",
+                    body: "Dear Support Team, I am encountering consistent failures during data transfers with my Crucial MX500 1TB SSD. The problem began after a recent OS update, which appears to be a compatibility issue. I have already attempted various troubleshooting methods, including rebooting the system, updating the SSD firmware, and replacing data cables, but the issue remains. The transfer either halts suddenly or fails to complete successfully. Could you please help me resolve this?"
+                },
+                {
+                    subject: "Azure Support Inquiry",
+                    body: "Dear Customer Support Team, I am submitting a request to upgrade the integration of Microsoft Azure for our development and analytics tools company. We aim to enhance our investment optimization and data analysis capabilities. Our current system is outdated and lacks essential features needed to support our expanding business requirements. Upgrading Azure is expected to improve our data analysis and investment optimization, leading to better decision-making and increased revenue. Integrating and developing analytics tools will also help us streamline our processes."
+                },
+                {
+                    subject: "Overheating Concern",
+                    body: "Dear Customer Support Team, I am submitting a report about a critical issue in the server room that demands immediate action. There are severe overheating problems, seemingly caused by a malfunctioning PC fan (PC-Lüfter). Despite attempts to control the situation, the issue persists, leading to increased temperatures that could potentially harm the hardware. To resolve this, I have already tried several restart cycles and performed basic cleaning to remove dust accumulation. However, the problem remains unresolved."
+                },
+                {
+                    subject: "Internet Connectivity Interruption",
+                    body: "Dear Support Team, I am submitting a report regarding a significant disruption in the Wi-Fi service that is currently impacting several employees in the office. This outage has resulted in the loss of several devices, greatly hindering our ability to manage accounts and oversee ongoing campaigns efficiently. The problem started unexpectedly, with no prior notice through scheduled maintenance alerts. I suspect the issue might be due to a faulty network adapter or ongoing maintenance work."
+                }
+            ],
+            sms: [
+                {
+                    message: "Hi, we're facing multiple service disruptions affecting project work and client interactions. Productivity is down and deadlines are being missed. Initial checks point to network hardware issues. I've tried basic troubleshooting but the issue remains. Please assist ASAP."
+                },
+                {
+                    message: "Hi, I need help understanding some unusual charges on my last bill. Can you share a detailed breakdown? Also, please check my payment method, status, and if there were any changes to the billing cycle or alerts on my account. Thanks!"
+                },
+                {
+                    message: "Hi, after the latest Ubuntu update, my Anker USB-C Ethernet Adapter, Logitech StreamCam & MacBook Pro are having unstable internet issues. They worked intermittently but now keep disconnecting. I’ve tried rebooting & reinstalling drivers — still not fixed."
+                },
+                {
+                    message: "Hi, I’d like detailed info on data integration for analytics platforms that work with large-scale data lakes. Specifically, we need support for Python-based ML setups. Also, what data sources are supported, and what APIs are available? This is key for building custom solutions."
+                }
+            ],
+            whatsapp: [
+                {
+                    message: "Hi, we're facing multiple service disruptions affecting project work and client interactions. Productivity is down and deadlines are slipping. Initial checks suggest network hardware issues. I've tried basic troubleshooting (reboots, diagnostics), but no luck. Please assist ASAP."
+                },
+                {
+                    message: "Hi, I need help understanding some unusual charges on my recent bill. Can you provide a breakdown? Also, please verify my payment status and if there were any changes to the billing cycle or alerts on my account. Thanks!"
+                },
+                {
+                    message: "Hi, after the latest Ubuntu update, my Anker USB-C Ethernet Adapter, Logitech-based issues are affecting my MacBook Pro setup. They worked initially but now disconnect frequently. I’ve tried rebooting and reinstalling drivers — no fix yet."
+                },
+                {
+                    message: "Hello, I’d like detailed information on analytics platforms for large-scale data lakes. We require Python-based ML integration support. What data sources are supported, and what APIs are available? This is critical for our custom solutions."
+                }
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageTypeButtons = document.querySelectorAll('.message-type-button');
+            const messageContents = document.querySelectorAll('.message-content');
+
+            messageTypeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    messageTypeButtons.forEach(btn => btn.classList.remove('active'));
+                    messageContents.forEach(content => content.classList.remove('active'));
+
+                    button.classList.add('active');
+                    const targetContentType = button.dataset.type;
+                    document.getElementById(`${targetContentType}-inputs`).classList.add('active');
+                    updateSampleQuestions(targetContentType);
+                });
+            });
+
+            // Initialize sample questions for default selection (email)
+            updateSampleQuestions('email');
+        });
+
+        function updateSampleQuestions(messageType) {
+            const select = document.getElementById('sample-questions');
+            select.innerHTML = '<option value="">Sample Questions</option>';
+            const questions = sampleQuestions[messageType];
+            if (questions && questions.length > 0) {
+                questions.forEach((q, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.text = q.subject || q.message.substring(0, 50) + (q.message.length > 50 ? '...' : '');
+                    option.dataset.type = messageType;
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        function populateSampleQuestion() {
+            const select = document.getElementById('sample-questions');
+            const index = select.value;
+            if (!index) return;
+            const messageType = select.options[select.selectedIndex].dataset.type;
+            const question = sampleQuestions[messageType][index];
+
+            document.getElementById('subject').value = '';
+            document.getElementById('email-message').value = '';
+            document.getElementById('sms-message').value = '';
+            document.getElementById('whatsapp-message').value = '';
+
+            if (messageType === 'email') {
+                document.getElementById('subject').value = question.subject;
+                document.getElementById('email-message').value = question.body;
+            } else if (messageType === 'sms') {
+                document.getElementById('sms-message').value = question.message;
+            } else if (messageType === 'whatsapp') {
+                document.getElementById('whatsapp-message').value = question.message;
+            }
+        }
+
+        document.getElementById('process-btn').addEventListener('click', function() {
+            const button = this;
+            const activeMessageTypeButton = document.querySelector('.message-type-button.active');
+            const messageType = activeMessageTypeButton.dataset.type;
+            const text = document.getElementById(`${messageType}-message`).value;
+            const subject = messageType === 'email' ? document.getElementById('subject').value : null;
+            const resultBox = document.getElementById('result');
+
+            if (messageType === 'email' && (!text.trim() || !subject.trim())) {
+                resultBox.textContent = 'Please provide both subject and message for email classification.';
+                return;
+            } else if (!text.trim()) {
+                resultBox.textContent = 'Please provide a valid text to classify.';
+                return;
+            }
+
+            // Disable button and update text
+            button.disabled = true;
+            button.textContent = 'Processing...';
+            resultBox.textContent = 'Processing...';
+
+            fetch('/text-classification/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ message_type: messageType, text: text, subject: subject })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                resultBox.textContent = data.response || 'No response received.';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultBox.textContent = `Error: ${error.message || 'Request failed. Please try again.'}`;
+            })
+            .finally(() => {
+                // Re-enable button and restore text
+                button.disabled = false;
+                button.textContent = 'Process It';
+            });
+        });
+
+        document.querySelector('.take-action-btn').addEventListener('click', function() {
+            const resultBox = document.getElementById('result');
+            const responseText = resultBox.textContent.trim();
+
+            if (responseText === 'Classification result will appear here...' || responseText === 'Processing...' || responseText.startsWith('Error')) {
+                alert('Please process a message first.');
+                return;
+            }
+
+            alert('Action taken based on classification: ' + responseText);
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>
+

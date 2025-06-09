@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Superset Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .iframe-container {
+            width: 100%;
+            height: 800px;
+        }
+        .top-right-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .top-right-btn a {
+            padding: 10px 16px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .top-right-btn a:hover {
+            background-color: #0056b3;
+        }
+        .header {
+            background-color: #f0f0f0;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+         @media (max-width: 480px) {
+            .header {
+                font-size: 18px;
+                padding: 15px 0;
+            }
+
+            .top-right-btn {
+                top: 10px;
+                right: 10px;
+            }
+
+            .top-right-btn a {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+
+            .iframe-container {
+                height: 350px;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            .header {
+                font-size: 20px;
+            }
+
+            .top-right-btn {
+                top: 15px;
+                right: 15px;
+            }
+
+            .top-right-btn a {
+                padding: 8px 14px;
+                font-size: 0.85rem;
+            }
+
+            .iframe-container {
+                height: 500px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .top-right-btn a {
+                font-size: 0.9rem;
+                padding: 10px 16px;
+            }
+
+            .iframe-container {
+                height: 650px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .iframe-container {
+                height: 800px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-right-btn">
+        <a href="{% url 'analysis_options' %}">Back</a>
+    </div>
+
+    <div class="header">
+        Superset Dashboard
+    </div>
+
+    {% if iframe_url %}
+        <iframe
+            class="iframe-container"
+            src="{{ iframe_url }}"
+            width="100%"
+            height="800"
+            frameborder="0"
+            allowfullscreen
+        ></iframe>
+    {% else %}
+        <p style="text-align:center;">Error: Dashboard URL not provided.</p>
+    {% endif %}
+</body>
+</html>

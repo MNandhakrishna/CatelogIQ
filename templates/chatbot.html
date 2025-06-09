@@ -1,0 +1,309 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CatelogIQ Chatbot</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+            }
+            100% {
+                box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+            }
+        }
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes glowBorder {
+            0%,
+            100% {
+                border-color: #00f2ff;
+            }
+            50% {
+                border-color: #66ffff;
+            }
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        body {
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .chatbot-container {
+            width: 90%;
+            max-width: 800px;
+            padding: 30px;
+            background: rgba(10, 25, 47, 0.85);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            animation: pulseGlow 3s ease-in-out infinite;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+        }
+        .chat-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .chat-header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(to right, #00f2ff, #1cefff);
+            -webkit-background-clip: text;
+            color: transparent;
+            margin: 0;
+        }
+        .chat-header p {
+            color: #ccefff;
+            font-size: 1.1em;
+            margin: 5px 0 0;
+        }
+        .chat-header a {
+            color: #80eaff;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .chat-header a:hover {
+            text-decoration: underline;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            background: linear-gradient(
+                to bottom right,
+                rgba(0, 40, 60, 0.6),
+                rgba(0, 70, 100, 0.4)
+            );
+            box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.1);
+            animation: glowBorder 4s ease-in-out infinite;
+        }
+        .message {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .message.user {
+            justify-content: flex-end;
+        }
+        .message.bot {
+            justify-content: flex-start;
+        }
+        .message-content {
+            max-width: 75%;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            line-height: 1.4;
+            animation: fadeInUp 0.4s ease;
+        }
+        .message.user .message-content {
+            background: #004c6d;
+            color: #ffffff;
+        }
+        .message.bot .message-content {
+            background: #003349;
+            color: #d8faff;
+        }
+        .message.bot.loading .message-content {
+            display: flex;
+            align-items: center;
+            background: #003349;
+        }
+        .message.bot.loading .message-content::before {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid #00f2ff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        .message.error .message-content {
+            background: #992d2d;
+            color: #fff;
+        }
+        .chat-input {
+            display: flex;
+            padding: 15px 0;
+            gap: 10px;
+        }
+        #user-input {
+            flex: 1;
+            padding: 12px;
+            font-size: 1em;
+            border-radius: 8px;
+            background: #021e30;
+            border: 1px solid #00f2ff;
+            color: #fff;
+            outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+        #user-input:focus {
+            box-shadow: 0 0 10px #00f2ff;
+        }
+        #send-button {
+            padding: 12px 25px;
+            background: linear-gradient(to right, #00f2ff, #0079bf);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        #send-button:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+        #send-button:disabled {
+            background: linear-gradient(to right, #00f2ff, #0079bf);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        @media (max-width: 480px) {
+        .chatbot-container {
+            padding: 16px;
+            height: 90vh;
+        }
+        .chat-header h1 {
+            font-size: 1.5rem;
+        }
+        .chat-header p {
+            font-size: 0.9rem;
+        }
+        #user-input {
+            font-size: 0.9rem;
+        }
+        #send-button {
+            padding: 10px 16px;
+            font-size: 0.9rem;
+        }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+        .chatbot-container {
+            padding: 24px;
+        }
+        .chat-header h1 {
+            font-size: 2rem;
+        }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="chatbot-container">
+        <div class="chat-header">
+            <h1>CatelogIQ Chatbot</h1>
+            <p>Ask your questions below</p>
+            <a href="{% url 'analysis_options' %}">← Back to Analysis Options</a>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot">
+                <div class="message-content">Hi! I'm your assistant. Ask me anything about your data (e.g., "How many error logs are there?").</div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your question here...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <script>
+        $(document).ready(function() {
+            function toggleInputState(disable) {
+                $('#send-button').prop('disabled', disable);
+                // Removed disabling of the input field to allow typing during processing
+            }
+
+            function addMessage(content, type) {
+                var messageDiv = $('<div>').addClass('message ' + type);
+                var contentDiv = $('<div>').addClass('message-content').text(content);
+                messageDiv.append(contentDiv);
+                $('#chat-messages').append(messageDiv);
+                $('#chat-messages').scrollTop($('#chat-messages')[0].scrollHeight);
+            }
+
+            $('#send-button').click(function() {
+                var query = $('#user-input').val().trim();
+                if (!query) {
+                    addMessage('Please enter a question.', 'error');
+                    return;
+                }
+
+                // Add user message
+                addMessage(query, 'user');
+                $('#user-input').val(''); // Clear input
+
+                // Disable send button, show loading message
+                toggleInputState(true);
+                addMessage('Processing', 'bot loading');
+
+                $.ajax({
+                    
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ query: query }),
+                    success: function(data) {
+                        // Remove loading message
+                        $('.message.bot.loading').remove();
+                        // Add bot response
+                        addMessage(data.response, 'bot');
+                        toggleInputState(false);
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr.responseText);
+                        $('.message.bot.loading').remove();
+                        var errorMsg = xhr.responseJSON && xhr.responseJSON.response ? xhr.responseJSON.response : 'An error occurred. Please try again.';
+                        addMessage(errorMsg, 'error');
+                        toggleInputState(false);
+                    }
+                });
+            });
+
+            // Allow pressing Enter to send the query (only when send button is not disabled)
+            $('#user-input').keypress(function(e) {
+                if (e.which === 13 && !$('#send-button').prop('disabled')) { // Enter key
+                    $('#send-button').click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

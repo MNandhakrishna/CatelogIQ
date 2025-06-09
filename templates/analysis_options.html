@@ -1,0 +1,505 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analysis Options - CatelogIQ</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <!-- Bootstrap CSS for Alerts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #1e1e2e, #3b0764);
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+        color: #f1f5f9;
+      }
+ 
+      /* Particle Canvas Background */
+      #particles-js {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+ 
+      /* Header: Text Only */
+      .header {
+        color: #ffffff;
+        text-align: center;
+        padding: 1.5rem 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-shadow: 0 0 15px rgba(167, 139, 250, 0.7), 0 0 25px rgba(236, 72, 153, 0.7);
+        animation: glowText 2s ease-in-out infinite;
+      }
+ 
+      @keyframes glowText {
+        0% {
+          text-shadow: 0 0 15px rgba(167, 139, 250, 0.7), 0 0 25px rgba(236, 72, 153, 0.7);
+        }
+        50% {
+          text-shadow: 0 0 25px rgba(167, 139, 250, 1), 0 0 35px rgba(236, 72, 153, 1);
+        }
+        100% {
+          text-shadow: 0 0 15px rgba(167, 139, 250, 0.7), 0 0 25px rgba(236, 72, 153, 0.7);
+        }
+      }
+ 
+      /* File Info Styling */
+      .file-info {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #e2e8f0;
+        margin-bottom: 1.5rem;
+        animation: fadeIn 1.2s ease-out;
+      }
+ 
+      /* Feature Bubble Styling */
+      .feature-bubble {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        margin: 1rem;
+        max-width: 300px;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        animation: floatIn 1s ease-out forwards;
+        opacity: 0;
+        position: relative;
+      }
+ 
+      /* Staggered Entrance Animations */
+      .feature-bubble:nth-child(1) { animation-delay: 0.2s; }
+      .feature-bubble:nth-child(2) { animation-delay: 0.4s; }
+      .feature-bubble:nth-child(3) { animation-delay: 0.6s; }
+      .feature-bubble:nth-child(4) { animation-delay: 0.8s; }
+ 
+      @keyframes floatIn {
+        0% {
+          transform: translateY(50px) scale(0.8);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+      }
+ 
+      .feature-bubble:hover {
+        transform: translateY(-10px) scale(1.05);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.15);
+      }
+ 
+      .feature-bubble h3 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #f1f5f9;
+        margin-bottom: 0.75rem;
+      }
+ 
+      .feature-bubble p {
+        font-size: 0.85rem;
+        color: #e2e8f0;
+        margin-bottom: 1.25rem;
+      }
+ 
+      /* Button Styling */
+      .feature-bubble .btn {
+        background: linear-gradient(90deg, #ec4899, #f97316);
+        color: white;
+        padding: 0.6rem 1.5rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        text-decoration: none;
+      }
+ 
+      .feature-bubble .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        animation: neonGlow 1.5s infinite;
+      }
+ 
+      @keyframes neonGlow {
+        0% {
+          box-shadow: 0 0 10px #ec4899, 0 0 20px #f97316, 0 0 30px #ec4899;
+        }
+        50% {
+          box-shadow: 0 0 20px #f97316, 0 0 30px #ec4899, 0 0 40px #f97316;
+        }
+        100% {
+          box-shadow: 0 0 10px #ec4899, 0 0 20px #f97316, 0 0 30px #ec4899;
+        }
+      }
+ 
+      .feature-bubble .btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.5s ease, height 0.5s ease;
+      }
+ 
+      .feature-bubble .btn:hover::after {
+        width: 150px;
+        height: 150px;
+      }
+ 
+      /* Individual Button Colors */
+      .stream-viewer .btn {
+        background: linear-gradient(90deg, #22d3ee, #10b981);
+      }
+ 
+      .visualization .btn {
+        background: linear-gradient(90deg, #a78bfa, #7c3aed);
+      }
+ 
+      .anomaly-detection .btn {
+        background: linear-gradient(90deg, #f43f5e, #be123c);
+      }
+ 
+      .chatbot .btn {
+        background: linear-gradient(90deg, #f97316, #d97706);
+      }
+ 
+      /* Back Button Styling */
+      .back-btn {
+        background: linear-gradient(90deg, #d946ef, #a21caf);
+        color: white;
+        padding: 0.6rem 1.5rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        overflow: hidden;
+        display: inline-block;
+        text-decoration: none;
+        z-index: 10;
+      }
+ 
+      .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        animation: neonGlowBack 1.5s infinite;
+      }
+ 
+      @keyframes neonGlowBack {
+        0% {
+          box-shadow: 0 0 10px #6b7280, 0 0 20px #4b5563, 0 0 30px #6b7280;
+        }
+        50% {
+          box-shadow: 0 0 20px #4b5563, 0 0 30px #6b7280, 0 0 40px #4b5563;
+        }
+        100% {
+          box-shadow: 0 0 10px #6b7280, 0 0 20px #4b5563, 0 0 30px #6b7280;
+        }
+      }
+ 
+      .back-btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.5s ease, height 0.5s ease;
+      }
+ 
+      .back-btn:hover::after {
+        width: 150px;
+        height: 150px;
+      }
+ 
+      /* Explore Analysis Tools */
+      .explore-tools {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #f1f5f9;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        margin: 1rem 0 1rem;
+        animation: fadeIn 1.2s ease-out;
+      }
+ 
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+ 
+      /* Alert Styling */
+      .alert {
+        max-width: 600px;
+        margin: 1rem auto;
+        border-radius: 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        animation: slideInFromLeft 0.6s ease-out;
+      }
+ 
+      @keyframes slideInFromLeft {
+        0% {
+          transform: translateX(-50px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+ 
+      /* Responsive Design */
+      @media (max-width: 480px) {
+      .header {
+        font-size: 1.6rem;
+        padding: 1rem 0;
+      }
+
+      .file-info {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .explore-tools {
+        font-size: 1.1rem;
+        margin: 0.5rem 0 1rem;
+      }
+
+      .feature-bubble {
+        padding: 1rem;
+        margin: 0.5rem 0;
+        max-width: 100%;
+      }
+
+      .feature-bubble h3 {
+        font-size: 1.1rem;
+      }
+
+      .feature-bubble p {
+        font-size: 0.8rem;
+      }
+
+      .feature-bubble .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+      }
+
+      .back-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+      }
+
+      .alert {
+        margin: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (min-width: 481px) and (max-width: 768px) {
+      .header {
+        font-size: 1.8rem;
+        padding: 1.2rem 0;
+      }
+
+      .file-info {
+        font-size: 1.1rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .explore-tools {
+        font-size: 1.3rem;
+        margin: 0.75rem 0;
+      }
+
+      .feature-bubble {
+        padding: 1.2rem;
+        margin: 0.75rem;
+        max-width: 100%;
+      }
+
+      .feature-bubble h3 {
+        font-size: 1.3rem;
+      }
+
+      .feature-bubble p {
+        font-size: 0.85rem;
+      }
+
+      .feature-bubble .btn {
+        padding: 0.55rem 1.3rem;
+        font-size: 0.85rem;
+      }
+
+      .back-btn {
+        padding: 0.55rem 1.3rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .header {
+        font-size: 2rem;
+      }
+
+      .feature-bubble {
+        max-width: 45%;
+      }
+
+      .feature-bubble .btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+      }
+
+      .back-btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
+    </style>
+  </head>
+  <body>
+    <!-- Particle.js Background -->
+    <div id="particles-js"></div>
+ 
+    <div class="container mx-auto px-4">
+      <div class="flex justify-start mt-4">
+        <a href="{% url 'log_analytics' %}" class="back-btn">Back</a>
+      </div>
+      <h1 class="header">CatelogIQ - Analysis Options</h1>
+      {% if selected_file %}
+        <div class="file-info">Currently processing file: <strong>{{ selected_file }}</strong></div>
+      {% else %}
+        <div class="file-info">No file selected for processing.</div>
+      {% endif %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+      <h2 class="explore-tools text-center">Explore Analysis Tools</h2>
+      <div class="flex flex-wrap justify-center">
+        <!-- Stream Viewer -->
+        <div class="feature-bubble stream-viewer">
+          <h3>Stream Viewer</h3>
+          <p>
+            Monitor real-time data streams from multiple sources to observe
+            events as they happen. Ideal for live dashboards, logs, or IoT
+            data monitoring.
+          </p>
+          <a href="{% url 'stream_viewer' %}" class="btn">Go to Stream Viewer</a>
+        </div>
+        <!-- Visualization -->
+        <div class="feature-bubble visualization">
+          <h3>Visualization</h3>
+          <p>
+            Explore interactive graphs and dashboards to gain deeper insights
+            into your data. Supports charts, KPIs.
+          </p>
+          <a href="{% url 'databricks_dashboard' %}" class="btn">Go to Visualization</a>
+        </div>
+        <!-- Anomaly Detection -->
+        <div class="feature-bubble anomaly-detection">
+          <h3>Anomaly Detection</h3>
+          <p>
+            Automatically detect unusual patterns or spikes in data. Useful
+            for android log analysis, and system monitoring.
+          </p>
+          <a href="{% url 'anomaly_detection' %}" class="btn">Go to Anomaly Detection</a>
+        </div>
+        <!-- Chatbot -->
+        <div class="feature-bubble chatbot">
+          <h3>Chatbot</h3>
+          <p>
+            Interact with a smart assistant to get instant answers, data insights, or navigate your analytics. Ideal for support, automated Q&A.
+          </p>
+          <a href="{% url 'chatbot' %}" class="btn">Go to Chatbot</a>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+      // Particles.js Configuration
+      particlesJS("particles-js", {
+        particles: {
+          number: { value: 60, density: { enable: true, value_area: 800 } },
+          color: { value: "#ffffff" },
+          shape: { type: "circle", stroke: { width: 0, color: "#000000" } },
+          opacity: { value: 0.4, random: true },
+          size: { value: 3, random: true },
+          line_linked: {
+            enable: true,
+            distance: 150,
+            color: "#ffffff",
+            opacity: 0.3,
+            width: 1,
+          },
+          move: {
+            enable: true,
+            speed: 1.5,
+            direction: "none",
+            random: false,
+            straight: false,
+            out_mode: "out",
+            bounce: false,
+          },
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" },
+            resize: true,
+          },
+          modes: {
+            repulse: { distance: 80, duration: 0.4 },
+            push: { particles_nb: 4 },
+          },
+        },
+        retina_detect: true,
+      });
+    </script>
+  </body>
+</html>

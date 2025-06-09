@@ -1,0 +1,272 @@
+{% load static template_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Viewer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6; /* Soft Blue */
+            --secondary: #f43f5e; /* Coral */
+            --bg-light: #fafafa; /* Off-White */
+            --text-dark: #1f2937; /* Dark Gray */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #eff6ff, var(--bg-light));
+            color: var(--text-dark);
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Header Animation */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .header-title {
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Filter Animation */
+        .filter-container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY20px; }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Table */
+        .table-container {
+            max-height: 600px;
+            max-width: 100%;
+            overflow-y: auto;
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background: white;
+            box-sizing: border-box;
+        }
+
+        table {
+            width: max-content;
+            min-width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            font-size: 14px;
+            white-space: normal; /* Allow text to wrap */
+            vertical-align: top; /* Align text to top */
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--text-dark);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr {
+            transition: background 0.2s ease;
+            animation: fadeIn 0.5s ease-out;
+            animation-fill-mode: backwards;
+            animation-delay: calc(var(--row-index) * 0.1s);
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        /* Scrollbar Styling */
+        .table-container::-webkit-scrollbar {
+            height: 10px;
+            width: 10px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #e5e7eb;
+            border-radius: 5px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+
+        /* Button Animations */
+        .btn {
+            transition: transform 0.2s ease, background-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .btn:hover::after {
+            width: 120px;
+            height: 120px;
+        }
+
+        /* Pagination */
+        .pagination button:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        /* Messages */
+        .messages {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Input Focus */
+        input:focus, select:focus {
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="shadow-md py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="header-title text-3xl font-bold text-white">Stream Viewer</h2>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Messages -->
+        {% if messages %}
+        <section class="messages mb-6 space-y-3">
+            {% for message in messages %}
+            <div class="p-4 rounded-md text-sm {% if message.tags == 'error' %}bg-red-50 text-red-800{% elif message.tags == 'info' %}bg-blue-50 text-blue-800{% else %}bg-green-50 text-green-800{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <!-- Filter Form -->
+        <section class="filter-container mb-8">
+            <form method="GET" class="flex flex-wrap gap-4 bg-white p-6 rounded-md shadow-sm border border-gray-200">
+                {% if filter_values.level %}
+                <div class="flex flex-col w-44">
+                    <label for="level" class="text-sm font-medium text-gray-700 mb-1">Level</label>
+                    <select name="level" id="level" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">All Levels</option>
+                        {% for value in filter_values.level %}
+                        <option value="{{ value|escape }}" {% if current_filters.level == value %}selected{% endif %}>
+                            {{ value|escape }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                {% if 'tag' in columns %}
+                <div class="flex flex-col w-44">
+                    <label for="tag" class="text-sm font-medium text-gray-700 mb-1">Tag</label>
+                    <input type="text" name="tag" id="tag" value="{{ current_filters.tag|default:'' }}" placeholder="Search tags..." class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                {% endif %}
+                {% if 'message' in columns %}
+                <div class="flex flex-col w-44">
+                    <label for="message" class="text-sm font-medium text-gray-700 mb-1">Message</label>
+                    <input type="text" name="message" id="message" value="{{ current_filters.message|default:'' }}" placeholder="Search message..." class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                {% endif %}
+                <div class="flex items-end gap-3">
+                    <button type="submit" class="btn bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">Apply Filters</button>
+                    <a href="{% url 'stream_viewer' %}?page=1" class="btn bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Reset Filters</a>
+                </div>
+            </form>
+        </section>
+
+        <!-- Data Table -->
+        <section class="table-container">
+            {% if results %}
+            <table>
+                <thead>
+                    <tr>
+                        {% for column in columns %}
+                        <th>{{ column|title }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in results %}
+                    <tr style="--row-index: {{ forloop.counter0 }}">
+                        {% for column in columns %}
+                        <td>{{ row|get_item:column|escape|default:'N/A' }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="p-4 text-red-600 text-sm font-medium">No data available to display. Try adjusting or resetting filters.</p>
+            {% endif %}
+        </section>
+
+        <!-- Pagination Controls -->
+        {% if pagination.total_pages > 1 %}
+        <section class="pagination mt-6 flex justify-center items-center gap-4">
+            <button class="btn bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:bg-gray-400" {% if not pagination.has_previous %}disabled{% endif %} onclick="window.location.href='?{% query_string page=pagination.previous_page level=current_filters.level tag=current_filters.tag message=current_filters.message %}'">
+                Previous
+            </button>
+            <span class="text-sm text-gray-700">Page {{ pagination.current_page }} of {{ pagination.total_pages }}</span>
+            <button class="btn bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:bg-gray-400" {% if not pagination.has_next %}disabled{% endif %} onclick="window.location.href='?{% query_string page=pagination.next_page level=current_filters.level tag=current_filters.tag message=current_filters.message %}'">
+                Next
+            </button>
+        </section>
+        {% endif %}
+    </main>
+
+    <footer class="py-6 bg-white shadow-inner">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <a href="{% url 'log_analytics' %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Back to Analysis</a>
+        </div>
+    </footer>
+</body>
+</html>

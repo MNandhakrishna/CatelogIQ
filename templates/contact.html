@@ -1,0 +1,616 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - CatelogIQ</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Animate.css for animations -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #f4f7fc, #d9e2ec);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* Navbar Styling (same as home.html) */
+    .navbar {
+      background: linear-gradient(90deg, #1e1e5f, #5f0a87);
+      padding: 20px 40px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      transition: background 0.5s ease;
+    }
+
+    .navbar.scrolled {
+      background: linear-gradient(90deg, #2a2a72, #5f0a87);
+    }
+
+    .navbar-brand {
+      color: #fff;
+      font-weight: 700;
+      font-size: 2.2rem;
+      transition: color 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+      color: #feca57 !important;
+    }
+
+    .nav-link {
+      color: #fff !important;
+      font-size: 1.1rem;
+      margin-right: 25px;
+      position: relative;
+      transition: all 0.3s ease;
+      padding: 10px 20px;
+      border-radius: 25px;
+    }
+
+    .nav-link.active {
+      color: #feca57 !important;
+      font-weight: 600;
+      background: rgba(254, 202, 87, 0.2);
+    }
+
+    .nav-link:hover {
+      background: linear-gradient(90deg, rgba(254, 202, 87, 0.3), rgba(236, 72, 153, 0.3));
+      transform: translateY(-3px);
+      color: #feca57 !important;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -6px;
+      left: 0;
+      background: linear-gradient(90deg, #feca57, #ec4899);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after,
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    .nav-underline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #feca57, #ec4899, #feca57);
+      width: 100%;
+      animation: moveUnderline 8s linear infinite;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+    .dropdown-item {
+      color: #fff;
+      transition: background 0.3s ease, color 0.3s ease;
+      position: relative;
+    }
+
+    .dropdown-menu {
+      background: #2a2a72;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      position: absolute;
+      display: none;
+      top: 100%;
+      left: 0;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown-item:hover {
+      background: #feca57;
+      color: #1e1e5f;
+      transform: translateX(10px);
+    }
+
+    .dropdown-submenu {
+      position: relative;
+    }
+
+    .dropdown-submenu .dropdown-menu {
+      top: 0;
+      left: -100%;
+      margin-left: -10px;
+      display: none;
+    }
+
+    .dropdown-submenu:hover .dropdown-menu {
+      display: block;
+    }
+
+    /* Contact Section */
+    .contact-hero {
+      padding: 150px 20px 100px;
+      text-align: center;
+      background: linear-gradient(135deg, #1e1e5f, #5f0a87);
+      color: white;
+    }
+
+    .contact-hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      animation: fadeInDown 1.5s ease-out;
+    }
+
+    .contact-hero p {
+      font-size: 1.3rem;
+      max-width: 800px;
+      margin: 0 auto;
+      animation: fadeInUp 2s ease-out;
+    }
+
+    .contact-form-section {
+      padding: 80px 20px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 40px;
+      color: #1e1e5f;
+      position: relative;
+      animation: fadeIn 1.5s ease-out;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: #feca57;
+      animation: underline 2s ease-out;
+    }
+
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      animation: fadeInUp 1.2s ease-out;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #00ddeb, #3c40c6);
+      border: none;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(to right, #3c40c6, #00ddeb);
+      transform: scale(1.1);
+    }
+
+    .contact-info {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .contact-info p {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .contact-info a {
+      color: #3c40c6;
+      text-decoration: none;
+    }
+
+    .contact-info a:hover {
+      color: #feca57;
+    }
+
+    /* Success Message */
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 10px;
+      margin: 20px auto;
+      max-width: 600px;
+      border-radius: 10px;
+      text-align: center;
+      animation: fadeIn 1s ease-out;
+    }
+
+    /* Footer (same as home.html) */
+    .footer {
+      background: linear-gradient(to right, #1e1e5f, #5f0a87);
+      color: white;
+      padding: 80px 40px 40px;
+      font-size: 1.1rem;
+    }
+
+    .footer h5 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #feca57;
+    }
+
+    .footer a {
+      color: #d3d3d3;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer a:hover {
+      color: #feca57;
+    }
+
+    .footer .social-icons a {
+      color: white;
+      font-size: 2.2rem;
+      margin: 0 15px;
+      transition: transform 0.3s, color 0.3s;
+    }
+
+    .footer .social-icons a:hover {
+      transform: scale(1.4);
+      color: #feca57;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes underline {
+      from { width: 0; }
+      to { width: 80px; }
+    }
+
+    @keyframes moveUnderline {
+      0% { background-position: 0 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .contact-hero h1 {
+        font-size: 2.5rem;
+      }
+      .contact-hero p {
+        font-size: 1.1rem;
+      }
+      .section-title {
+        font-size: 2rem;
+      }
+      .navbar {
+        padding: 15px 20px;
+      }
+      .footer {
+        text-align: center;
+      }
+      .dropdown-submenu .dropdown-menu {
+        left: 0;
+        margin-left: 0;
+        margin-top: 5px;
+      }
+    }
+
+    /* Mobile: 320px–480px */
+    @media (max-width: 480px) {
+      .contact-hero h1 {
+        font-size: 2rem;
+      }
+      .contact-hero p {
+        font-size: 1rem;
+      }
+      .section-title {
+        font-size: 1.5rem;
+      }
+      .contact-form-section {
+        padding: 40px 15px;
+      }
+      .contact-form {
+        padding: 20px;
+      }
+      .navbar {
+        padding: 10px 15px;
+      }
+      .navbar-brand {
+        font-size: 1.5rem;
+      }
+      .nav-link {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+      }
+      .footer {
+        padding: 40px 20px 20px;
+        font-size: 1rem;
+      }
+    }
+
+    /* Tablet: 481px–768px */
+    @media (min-width: 481px) and (max-width: 768px) {
+      .contact-hero h1 {
+        font-size: 2.5rem;
+      }
+      .contact-hero p {
+        font-size: 1.2rem;
+      }
+      .section-title {
+        font-size: 2rem;
+      }
+      .contact-form-section {
+        padding: 60px 20px;
+      }
+      .navbar {
+        padding: 12px 20px;
+      }
+      .nav-link {
+        font-size: 1rem;
+      }
+      .footer {
+        font-size: 1rem;
+      }
+    }
+
+    /* Laptop: 769px–1024px */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .contact-hero h1 {
+        font-size: 3rem;
+      }
+      .contact-hero p {
+        font-size: 1.3rem;
+      }
+      .section-title {
+        font-size: 2.3rem;
+      }
+      .contact-form-section {
+        padding: 70px 30px;
+      }
+      .nav-link {
+        font-size: 1.05rem;
+      }
+      .footer {
+        font-size: 1.05rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark animate_animated animate_fadeInDown">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'home' %}">CatelogIQ</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home' %}">Home</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="featuresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Features
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="featuresDropdown">
+              <li class="dropdown-submenu">
+                <a class="dropdown-item" href="#" id="logAnalyticsToggle">Android Log Analytics</a>
+                <ul class="dropdown-menu" id="logAnalyticsSubmenu" style="display: none;">
+                  <li>
+                    <a class="dropdown-item" href="{% url 'stream_viewer' %}">Stream Viewer</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% urlLICENSEREFERENCEE_URLS = {
+  'home': '{% url 'home' %}',
+  'stream_viewer': '{% url 'stream_viewer' %}',
+  'databricks_dashboard': '{% url 'databricks_dashboard' %}',
+  'anomaly_detection': '{% url 'anomaly_detection' %}',
+  'chatbot': '{% url 'chatbot' %}',
+  'log_analytics': '{% url 'log_analytics' %}',
+  'about_us': '{% url 'about_us' %}',
+  'contact': '{% url 'contact' %}'
+}?>">Visualization</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'anomaly_detection' %}">Anomaly Detection</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'chatbot' %}">Chatbot</a>
+                  </li>
+                </ul>
+              </li>
+              <li><a class="dropdown-item" href="{% url 'text_classification' %}">Text Categorization</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'about_us' %}">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'contact' %}">Contact</a>
+          </li>
+        </ul>
+      </div>
+      <div class="nav-underline"></div>
+    </div>
+  </nav>
+
+  <!-- Contact Hero Section -->
+  <section class="contact-hero">
+    <h1>Contact Us</h1>
+    <p>We’re here to help! Reach out with any questions or to learn more about our solutions.</p>
+  </section>
+
+  <!-- Contact Form Section -->
+  <div class="contact-form-section">
+    <h2 class="section-title">Get in Touch</h2>
+    {% if messages %}
+      {% for message in messages %}
+        <div class="success-message">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    <form class="contact-form" method="post" action="{% url 'contact' %}">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+      </div>
+      <div class="mb-3">
+        <label for="message" class="form-label">Message</label>
+        <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Send Message</button>
+    </form>
+    <div class="contact-info">
+      <p><strong>Email:</strong> <a href="mailto:support@quantum-i.ai"> support@quantum-i.ai</a></p>
+      <p><strong>Phone:</strong> 7032917715</p>
+      <p><strong>Address:</strong> Quantum-i Private Limited | 502, 5th floor, SCR Tower, Siddhi Vinayak Nagar, 
+      Madhapur, Hyderabad, Telangana - 500081, India. | <a href="https://quantum-i.ai/">www.quantum-i.ai</a></p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-4 animate_animated animate_fadeInUp">
+          <h5>About CatelogIQ</h5>
+          <p>CatelogIQ provides cutting-edge AI solutions for data categorization and analytics, empowering businesses to make data-driven decisions.</p>
+        </div>
+        <div class="col-md-2 animate_animated animate_fadeInUp animate_delay-1s">
+          <h5>Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'text_classification' %}">Text Classification</a></li>
+            <li><a href="{% url 'log_analytics' %}">Android Log Analytics</a></li>
+            <li><a href="{% url 'about_us' %}">About Us</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 animate_animated animate_fadeInUp animate_delay-2s">
+          <h5>Resources</h5>
+          <ul class="list-unstyled">
+            <li><a href="{% url 'about_us' %}">About Us</a></li>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 animate_animated animate_fadeInUp animate_delay-3s">
+          <h5>Stay Connected</h5>
+          <div class="social-icons mt-3">
+            <a href="https://github.com/Quantumiai/" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/company/quantumi-ai" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://www.youtube.com/@Quantum-I-f9d" target="_blank"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4" style="border-color: #feca57; opacity: 0.4;">
+      <p class="text-center mt-4">© 2025 CatelogIQ | Built with ❤ by <a href="#">Quantum-i.ai</a></p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom JS for Animations -->
+  <script>
+    // Navbar scrolling effect
+    window.addEventListener('scroll', function() {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Active nav link highlighting
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+
+    // Dropdown submenu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggle = document.getElementById('logAnalyticsToggle');
+      const submenu = document.getElementById('logAnalyticsSubmenu');
+
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+      });
+
+      // Close submenu when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!toggle.contains(event.target) && !submenu.contains(event.target)) {
+          submenu.style.display = 'none';
+        }
+      });
+
+      // Prevent submenu items from closing when clicked
+      submenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    });
+  </script>
+</body>
+</html>

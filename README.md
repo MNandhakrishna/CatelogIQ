@@ -27,7 +27,6 @@ CatelogIQ simplifies log analysis and anomaly detection using real-time insights
 - The chatbot is powered by LLMs and custom-trained ML models to generate insightful, context-aware responses.
 - Analyze chat logs by session, user, or timestamp.
 - Detect drop-offs, frequent intents, and engagement.
-- Uses PySpark-based Databricks notebooks for insight generation.
 - It helps users:
 - Understand log patterns
 

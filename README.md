@@ -88,8 +88,7 @@ CatelogIQ simplifies log analysis and anomaly detection using real-time insights
 - Gmail (App Password enabled)
   
 ### Configure `.env`
-
-env
+```
 AZURE_ACCOUNT_NAME=your_azure_name
 AZURE_ACCOUNT_KEY=your_azure_key
 AZURE_FILE_SYSTEM=your_file_system
@@ -99,20 +98,22 @@ DATABRICKS_HTTP_PATH=your_http_path
 EMAIL_HOST_USER=your@gmail.com
 EMAIL_HOST_PASSWORD=your_gmail_app_password
 
+```
+---
 
 ### Run Locally
-
+```
 bash
 python manage.py migrate
 python manage.py runserver
-
-
+```
+```
 Access at: `http://localhost:8000`
-
-
+```
+---
 
 ## Project Structure
-
+```
 
 CATELOGIQ  
 ├── pycache  
@@ -157,8 +158,8 @@ CATELOGIQ
 ├── tempCodeRunnerFile.py  
 ├── test_adds.py  
 └── test_key.py
-
-
+```
+---
 
 ## Routes
 
@@ -180,7 +181,7 @@ CATELOGIQ
 
 ---
 
-## 🔐 API Endpoints
+## API Endpoints
 
 | Method | Endpoint                             | Description        |
 | ------ | ------------------------------------ | ------------------ |
@@ -233,4 +234,4 @@ gunicorn CatelogIQ.wsgi
 * **LinkedIn:** [QuantumI AI](https://www.linkedin.com/company/quantumi-ai/)
 * **YouTube:** [Quantum-I Channel](https://www.youtube.com/@Quantum-I-f9d)
 
----
+

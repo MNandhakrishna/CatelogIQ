@@ -86,11 +86,10 @@ CatelogIQ simplifies log analysis and anomaly detection using real-time insights
 - Azure Data Lake account
 - Databricks workspace (token + HTTP path)
 - Gmail (App Password enabled)
-````
-
+  
 ### Configure `.env`
 
-```env
+env
 AZURE_ACCOUNT_NAME=your_azure_name
 AZURE_ACCOUNT_KEY=your_azure_key
 AZURE_FILE_SYSTEM=your_file_system
@@ -99,22 +98,22 @@ DATABRICKS_TOKEN=your_token
 DATABRICKS_HTTP_PATH=your_http_path
 EMAIL_HOST_USER=your@gmail.com
 EMAIL_HOST_PASSWORD=your_gmail_app_password
-```
+
 
 ### Run Locally
 
-```bash
+bash
 python manage.py migrate
 python manage.py runserver
-```
+
 
 Access at: `http://localhost:8000`
 
----
+
 
 ## Project Structure
 
-```
+
 CATELOGIQ  
 ├── pycache  
 ├── catalog  
@@ -159,7 +158,7 @@ CATELOGIQ
 ├── test_adds.py  
 └── test_key.py
 
----
+
 
 ## Routes
 

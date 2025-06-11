@@ -1,14 +1,14 @@
-# CatalogIQ
+# CatelogIQ
 
-**CatalogIQ** is a Django-based data analytics platform for real-time log analysis, intelligent text classification, chatbot analytics, and anomaly detection. It integrates **Superset** for dynamic dashboards, **Azure Data Lake** for storage, and **Databricks** for scalable ML pipelines using **PySpark**.
+**CatelogIQ** is a Django-based data analytics platform for real-time log analysis, intelligent text classification, chatbot and anomaly detection. It integrates **Superset** for dynamic dashboards, **Azure Data Lake** for storage, and **Databricks** for big data processing and scalable ML pipelines using **PySpark**.
 
-Secure API access, responsive UI (Tailwind CSS & Bootstrap), and cloud-ready deployment via **Render** make CatalogIQ production-ready.
+Secure API access, responsive UI (Tailwind CSS & Bootstrap), and cloud-ready deployment via **Render** make CatelogIQ production-ready.
 
 ---
 
 ## Purpose
 
-CatalogIQ simplifies log analysis and anomaly detection using real-time insights, intuitive dashboards, and cloud-scale ML—backed by Databricks and Azure.
+CatelogIQ simplifies log analysis and anomaly detection using real-time insights, intuitive dashboards, and cloud-scale ML—backed by Databricks and Azure.
 
 ---
 
@@ -22,10 +22,14 @@ CatalogIQ simplifies log analysis and anomaly detection using real-time insights
 
 ---
 
-### 2. Chatbot Analytics
+### 2. Chatbot Powered by LLMs
+- Users can ask natural language queries related to log trends, system performance, or dataset contents.
+- The chatbot is powered by LLMs and custom-trained ML models to generate insightful, context-aware responses.
 - Analyze chat logs by session, user, or timestamp.
 - Detect drop-offs, frequent intents, and engagement.
 - Uses PySpark-based Databricks notebooks for insight generation.
+- It helps users:
+- Understand log patterns
 
 ---
 
@@ -65,9 +69,9 @@ CatalogIQ simplifies log analysis and anomaly detection using real-time insights
 |-------------|-------------------------------------------|
 | Backend     | Django, Python                            |
 | Frontend    | Tailwind CSS, Bootstrap, JS, HTML         |
-| Data        | Azure Data Lake, Databricks SQL, PySpark  |
+| Data        | Azure Data Lake, Databricks SQL           |
 | Visuals     | Apache Superset                           |
-| Deployment  | Render                                     |
+| Deployment  | Render                                    |
 | Email       | Gmail SMTP (App Password)                 |
 | AI/ML       | NLP, prompt engineering, PySpark ML       |
 | VCS         | GitHub, GitHub Desktop, Meld              |
@@ -125,7 +129,7 @@ CATELOGIQ
 │   │   ├── tests.py  
 │   │   ├── urls.py  
 │   │   └── views.py  
-│   ├── catalogiq  
+│   ├── CatelogIQ  
 │   │   ├── pycache  
 │   │   ├── init.py  
 │   │   ├── asgi.py  
@@ -210,7 +214,7 @@ pip install -r requirements.txt && python manage.py migrate
 3. **Start Command:**
 
 ```bash
-gunicorn catalogiq.wsgi
+gunicorn CatelogIQ.wsgi
 ```
 
 4. Add environment variables in the Render dashboard.

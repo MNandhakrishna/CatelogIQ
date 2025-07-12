@@ -37,7 +37,7 @@ To build a scalable system that:
                    Alerts |  Dashboards | Root Cause
 
 
-### Data Engineering Stack
+### Tech Stack
 | Component         | Technology                           |
 | ----------------- | ------------------------------------ |
 | Storage           | Azure Data Lake Gen2 (ADLS)          |

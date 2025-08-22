@@ -1,242 +1,125 @@
-# CatelogIQ — Anomaly Detection & Text Categorization 
 
-**CatelogIQ** is designed for intelligent **log anomaly detection** and **message classification**. It analyzes system logs in real time to detect anomalies, determine their root causes, and alert relevant teams. Simultaneously, it categorizes incoming messages from WhatsApp, SMS, and email using **LLMs**, prioritizes them (High, Medium, Low), and routes them to the appropriate department.
+# CatelogIQ
 
-This production-ready platform integrates **Azure Data Lake**, **Databricks**, **Superset**, and deploys seamlessly on **Render**.
+## Overview
 
----
+CatelogIQ is a Django-based application designed for log anomaly detection and LLM-based message categorization. It integrates with Azure ADLS for data storage and utilizes Databricks for data processing. This project aims to streamline log analysis processes, providing real-time anomaly detection and categorization to enhance operational efficiency.
 
-## Project Objective
+## Motivation
 
-To build a scalable system that:
-- **Detects anomalies** in system logs using ML-based pattern analysis.
-- **Identifies root causes** and sends automated alerts.
-- **Classifies departments** from WhatsApp, SMS, Email using LLMs Classifies departments.
-- **Routes alerts** to respective departments based on priority and category.
+Organizations often struggle with processing and analyzing large volumes of log data, leading to delayed insights and potential oversight of critical anomalies. CatelogIQ addresses these challenges by providing a robust, scalable platform for log analysis and anomaly detection.
 
----
+## Problem Statement
 
-## Architecture Overvie
-                           Android logs 
-                                ↓
-                           [Log Parser]
-                                ↓
-                 Azure ADLS (Bronze Layer - Raw Ingestion)
-                                ↓
-                    Databricks Notebooks
-                - Cleaning, Feature Extraction
-                - Anomaly Scoring (Isolation Forest)
-                - LLM Integration (Prompt-based Classification)
-                                ↓
-             ┌────────────────────────────────────────────┐
-             │ Silver Layer (Cleaned Logs & Categorized)  │
-             └────────────────────────────────────────────┘
-                                ↓
-               Gold Layer (Aggregated + Alert-ready Data)
-                                ↓
-                   Alerts |  Dashboards | Root Cause
+The current solutions for log analysis are often slow, inefficient, and lack the ability to categorize and detect anomalies in real-time. CatelogIQ aims to automate the detection of irregularities in log data and provide actionable insights with high accuracy.
 
+## Technologies Used
 
-### Tech Stack
-| Component         | Technology                           |
-| ----------------- | ------------------------------------ |
-| Storage           | Azure Data Lake Gen2 (ADLS)          |
-| Processing Engine | Databricks (PySpark, SQL)            |
-| Classification    | LLMs (e.g., OpenAI, Mistral, etc.)   |
-| Visualization     | Apache Superset                      |
-| Interface         | Django                               |
-| Alerting          | Email via Gmail SMTP                 |
-| Deployment        | Render                               |
-| Backend           | Django, Python                       |
-| Frontend          | Tailwind CSS, Bootstrap, JS, HTML    |
-| Versioning        | GitHub, GitHub Desktop, Meld         |
-
-
-
-## Key Features
-
-### 1. Anomaly Detection
-- Analyze system logs from Parquet files stored in Azure.
-- Detect unusual patterns, spikes, failures, and outliers using ML (e.g., Isolation Forest).
-- Identify root causes of anomalies.
-- Automatically trigger email alerts for critical issues.
-- Visualized insights using **Apache Superset** (heatmaps, time-series overlays).
-
----
-
-### 2. Chatbot 
-- Users can ask questions about system logs and performance.
-- Natural language understanding with LLM integration.
-- Session-level analytics: user queries, drop-offs, frequent intents.
-
----
-
-### 3. Log Stream Viewer
-- Real-time log exploration from Parquet files.
-- Filtering by timestamp, log level, or message type.
-- Paginated, scrollable UI with fixed headers.
-
----
-
-### 📊 4. Visual Dashboards
-- Interactive Superset dashboards with:
-  - Cross-filtering
-  - Drill-downs
-  - Real-time table views
-  - Word clouds, bar/line/pie charts
-
----
-
-###  5. Text Categorization & Prioritization
-- Auto-classify unstructured messages from:
-  - WhatsApp
-  - SMS
-  - Email
-- Categorizes messages into:
-  - Billing and Payments
-  - Technical Support
-  - IT Support
-  - Service Outages and Maintenance
-- Assigns priority: **High**, **Medium**, or **Low**
-- Sends alerts to relevant department teams via email.
-- Powered by **LLMs** and Databricks ML pipelines.
-
----
+- **Django**: The web framework used for building the application.
+- **Azure ADLS**: Data storage solution used for storing large log files.
+- **Databricks**: Cloud-based platform for data engineering and processing.
+- **Superset**: Open-source BI tool for visualizing and analyzing data.
+- **Render**: Platform used for deploying the application.
 
 ## Installation
 
 ### Prerequisites
 
-- Python 3.12+
-- Git / GitHub Desktop
-- Azure Data Lake account
-- Databricks workspace (token + HTTP path)
-- Gmail with App Password enabled
+- Python 3.8+
+- Django 3.2+
+- Azure SDK
+- Databricks CLI
+- PostgreSQL (for production environment)
 
----
+### Steps
 
-### Configure `.env`
-```env
-AZURE_ACCOUNT_NAME=your_azure_name
-AZURE_ACCOUNT_KEY=your_azure_key
-AZURE_FILE_SYSTEM=your_file_system
-DATABRICKS_HOST=https://adb-xxxx
-DATABRICKS_TOKEN=your_token
-DATABRICKS_HTTP_PATH=your_http_path
-EMAIL_HOST_USER=your@gmail.com
-EMAIL_HOST_PASSWORD=your_gmail_app_password
-````
+1. Clone the repository:
 
----
+   git clone https://github.com/MNandhakrishna/CatelogIQ.git
+   cd CatelogIQ
 
-### Run Locally
-
-```bash
-python manage.py migrate
-python manage.py runserver
-```
-
-Access the app at: [http://localhost:8000](http://localhost:8000)
-
----
-
-## Project Structure
-
-<details>
-<summary>Click to view</summary>
-
-```
-CATELOGIQ  
-├── catalog  
-│   ├── migrations  
-│   ├── templates  
-│   ├── staticfiles  
-│   ├── views.py  
-│   ├── models.py  
-│   ├── urls.py  
-│   └── admin.py  
-├── CatelogIQ (project root)  
-│   ├── settings.py  
-│   ├── urls.py  
-│   └── wsgi.py  
-├── templates/  
-│   ├── about_us.html  
-│   ├── anomaly_detection.html  
-│   ├── chatbot.html  
-│   ├── dashboard.html  
-│   ├── log_analytics.html  
-│   ├── stream_viewer.html  
-│   ├── text_classification.html  
-├── manage.py  
-├── requirements.txt  
-└── db.sqlite3  
-```
-
-</details>
-
----
-
-## Routes
-
-| URL Path                  | Description                   |
-| ------------------------- | ----------------------------- |
-| `/`                       | Home page                     |
-| `/log-analytics/`         | Upload and monitor logs       |
-| `/analysis-options/`      | Choose analysis module        |
-| `/stream-viewer/`         | Explore log data              |
-| `/chatbot/`               | Chatbot insights              |
-| `/anomaly-detection/`     | Anomaly detection dashboard   |
-| `/text-classification/`   | Message classification viewer |
-| `/dashboard/`             | Superset dashboard (iframe)   |
-| `/contact/`               | Contact form                  |
-| `/about-us/`              | About page                    |
-| `/debug_session/`         | Dev debugging tools           |
-| `/check_pipeline_status/` | View DLT pipeline status      |
-| `/reset_pipeline_status/` | Reset pipeline flags          |
-
----
-
-## API Endpoints
-
-| Method | Endpoint                             | Description        |
-| ------ | ------------------------------------ | ------------------ |
-| `GET`  | `/api/catalog/search?q=term`         | Search catalog     |
-| `GET`  | `/api/catalog/filter?category=value` | Filter by category |
-
-**Authentication Header:**
-
-```http
-Authorization: Bearer <API_KEY>
-```
-
----
-
-## Deployment (Render)
-
-1. Connect your GitHub repo to Render
-2. **Build Command:**
+2. Install dependencies:
 
    ```bash
-   pip install -r requirements.txt && python manage.py migrate
+   pip install -r requirements.txt
    ```
-3. **Start Command:**
+
+3. Set up environment variables:
 
    ```bash
-   gunicorn CatelogIQ.wsgi
+   cp .env.example .env
+   # Edit .env with your credentials for Databricks and Azure
    ```
-4. Add `.env` variables in Render dashboard
 
-**Tips:**
+4. Run migrations:
 
-* Use PostgreSQL in production
-* Run `python manage.py collectstatic` for static files
+   ```bash
+   python manage.py migrate
+   ```
 
----
+5. Start the development server:
+
+   ```bash
+   python manage.py runserver
+   ```
+
+## Usage
+
+To analyze logs and detect anomalies, you can use the following Python snippet:
+
+```python
+from catalogiq import LogAnalyzer
+
+# Initialize the analyzer
+analyzer = LogAnalyzer()
+
+# Detect anomalies in the log file
+analyzer.detect_anomalies('path_to_log_file')
+```
+
+### Running with Databricks
+
+You can integrate Databricks for processing logs by setting up your Databricks credentials in the `.env` file and calling Databricks functions within the app for distributed data processing.
+
+```python
+from databricks_api import DatabricksAPI
+
+# Initialize Databricks API client
+db_client = DatabricksAPI(token='your_token', host='your_host')
+
+# Submit a job to process log data
+db_client.jobs.submit_run(job_id='job_id', parameters={'log_path': 'path_to_log'})
+```
+
+## Contributing
+
+We welcome contributions! If you would like to contribute to CatelogIQ, please fork the repository, create a new branch, and submit a pull request with your changes.
+
+Before submitting your PR, make sure to:
+
+* Follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide.
+* Add tests to cover your changes.
+* Run the tests to make sure everything works: `python manage.py test`.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
-* **Email:** [nmyaka@quantum-i.ai](mailto:nmyaka@quantum-i.ai)
-* **Website:** [quantum-i.ai](https://quantum-i.ai)
-* **GitHub:** [Quantumiai](https://github.com/Quantumiai)
-* **LinkedIn:** [QuantumI AI](https://www.linkedin.com/company/quantumi-ai/)
-* **YouTube:** [Quantum-I Channel](https://www.youtube.com/@Quantum-I-f9d)
+For support or inquiries, please email [your.email@example.com](mailto:your.email@example.com).
+
+---
+
+## Security
+
+Please ensure that you do not expose sensitive data like API keys or database credentials in the repository. Store sensitive information in environment variables or use a secret management service. If you find any security issues, please open an issue or submit a pull request.
+
+## Acknowledgments
+
+* **Databricks** for their cloud-based data processing platform.
+* **Azure ADLS** for scalable storage solutions.
+* **Superset** for providing a powerful data visualization tool.
+
+
+
